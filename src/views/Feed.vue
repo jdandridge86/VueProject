@@ -1,10 +1,13 @@
 <script setup>
 import { onMounted, ref, useTemplateRef } from 'vue'
 import Message from '../components/Message.vue'
+import { useUserStore } from '@/stores/user';
 
 const items = ref([])
 let num = ref()
 const cont = useTemplateRef("cont");
+
+const userStore = useUserStore();
 
 
 const formatDate = (dateString) => {
@@ -19,7 +22,7 @@ function getLastTime () {
 async function getNumMessages(e) {
 	//e.preventDefault();
 	 
-	const token = localStorage.getItem("token")
+	const token = userStore.token;
 	let queryParameter = items.value[0].updatedAt;
     
 	const url = `https://hap-app-api.azurewebsites.net/messages/count?limit=6&after=${queryParameter}`
@@ -51,33 +54,33 @@ async function getNumMessages(e) {
 
 async function getNewMessages() {
 		 
-		 const token = localStorage.getItem("token")
-		 let queryParameter = items.value[0].updatedAt;
-	 
-		 const url = `https://hap-app-api.azurewebsites.net/messages?limit=6&after=${queryParameter}`;
-	 
-		 const options = {
-			 method: "GET",
-			 headers: {
-				 "Content-Type": "application/json",
-				 Authorization: `Bearer ${token}`,
-			 },
-		 }
-	 
-		 let response = await fetch(url, options)
-	 
-		 if (response.status === 200) {
-			 console.log("successfully got new messages!")
-					 
-			 let data = await response.json()
+	const token = userStore.token;
+	let queryParameter = items.value[0].updatedAt;
 
-			 items.value = [...data, ...items.value];	
-		 }
-	 }
+	const url = `https://hap-app-api.azurewebsites.net/messages?limit=6&after=${queryParameter}`;
+
+	const options = {
+		method: "GET",
+		headers: {
+			"Content-Type": "application/json",
+			Authorization: `Bearer ${token}`,
+		},
+	}
+
+	let response = await fetch(url, options)
+
+	if (response.status === 200) {
+		console.log("successfully got new messages!")
+				
+		let data = await response.json()
+
+		items.value = [...data, ...items.value];	
+	}
+}
 
 	 async function getOldMessages() {
 		 
-		 const token = localStorage.getItem("token")
+		const token = userStore.token;
 
 		 let queryParameter = items.value[items.value.length-1].updatedAt;
 		 //items.value[items.value.length - 1]
@@ -107,7 +110,7 @@ async function getNewMessages() {
 
 async function getMessages() {
 		 
-	const token = localStorage.getItem("token")
+	const token = userStore.token;
 
 	const url = 'https://hap-app-api.azurewebsites.net/messages?limit=6'
 

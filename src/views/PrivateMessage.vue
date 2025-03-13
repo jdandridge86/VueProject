@@ -2,6 +2,7 @@
 import Header from '../components/Header.vue'
 import { useRoute, useRouter } from 'vue-router'
 import { onMounted, ref , reactive } from 'vue'
+import { useUserStore } from '@/stores/user'
 
 const router = useRouter()
 
@@ -11,10 +12,11 @@ let message = ref("")
 
 const route = useRoute()
 console.log(route.query.name)
+const userStore = useUserStore();
 
 async function getPrivateMessages () {
     
-    const token = localStorage.getItem("token")
+    const token = userStore.token;
     const url = `https://hap-app-api.azurewebsites.net/messages/${props.userId}`
 
     console.log(url)
@@ -41,7 +43,7 @@ async function getPrivateMessages () {
 
 async function sendPrivateMessage () {
     
-    const token = localStorage.getItem("token")
+    const token = userStore.token;
     const url = `https://hap-app-api.azurewebsites.net/message/${props.userId}`
 
     console.log(url)

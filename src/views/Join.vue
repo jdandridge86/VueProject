@@ -2,6 +2,8 @@
 import Header from '../components/Header.vue'
 import { useRouter } from 'vue-router'
 import { ref , reactive } from 'vue'
+import { useUserStore } from '@/stores/user'
+
 
 const router = useRouter()
 
@@ -12,15 +14,12 @@ let userName = ref("")
 let password = ref("")
 let password2 = ref("")
 
+const userStore = useUserStore();
+
 
 async function join (event) {
 	event.preventDefault()
 
-	//let lastName = document.querySelector("#lastName").value;
-	//let email = document.querySelector("#email").value;
-	//let userName = document.querySelector("#username").value;
-	//let password = document.querySelector("#password").value;
-	//let password2 = document.querySelector("#password2").value;
 	let errorMsg = document.querySelector("#errorMsg");
 
 	// do some input validation
@@ -60,11 +59,15 @@ async function join (event) {
 		if (response.status === 201) {
 			//store username and token in local response
 			const data = await response.json()
-
 			
-			localStorage.setItem("token", data.token)
-			localStorage.setItem("user", data.user.userName)
-			//console.log(data.userName)
+			userStore.setUser(
+				data.user.firstName,
+				data.user.lastName,
+				data.user.userName,
+				data.user.email,
+				data.token
+			)
+			
 
 			router.push({name: 'main'})
 			

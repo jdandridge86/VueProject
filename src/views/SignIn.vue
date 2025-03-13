@@ -3,6 +3,11 @@
 import Header from '../components/Header.vue'
 import { useRouter } from 'vue-router'
 import { ref , reactive } from 'vue'
+//import { storeToRefs } from 'pinia';
+//import { useUserStore } from '@/stores/user';
+
+//const userStore = useUserStore()
+//const { email, password } = storeToRefs(userStore)
 
 const router = useRouter()
 

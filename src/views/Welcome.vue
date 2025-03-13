@@ -1,5 +1,8 @@
 <script setup>
-let user = localStorage.getItem("user");
+import { useUserStore } from '@/stores/user';
+
+const userStore = useUserStore();
+let user = userStore.userName;
 </script>
 
 <template>

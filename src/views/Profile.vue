@@ -2,9 +2,11 @@
 import { useRouter } from 'vue-router'
 import { onMounted, ref, useTemplateRef } from 'vue'
 import Modal from '@/components/Modal.vue';
+import { useUserStore } from '@/stores/user';
 
 // Modal
 const modal = useTemplateRef('name-modal')
+const userStore = useUserStore();
 
 
 function cancel(e) {
@@ -30,7 +32,7 @@ const password = ref('');
 
 async function saveProfile() {
 
-	const token = localStorage.getItem("token")
+	const token = userStore.token;
 
 	const url = 'https://hap-app-api.azurewebsites.net/user'
 
@@ -68,7 +70,7 @@ async function saveProfile() {
 
 async function loadProfile() {
 
-	const token = localStorage.getItem("token")
+	const token = userStore.token;
 
 	const url = 'https://hap-app-api.azurewebsites.net/user'
 

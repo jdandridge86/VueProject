@@ -2,22 +2,24 @@
 import Header from '../components/Header.vue'
 import { useRouter } from 'vue-router'
 import { onMounted, ref , reactive } from 'vue'
+import { useUserStore } from '@/stores/user'
 
 const router = useRouter()
+const userStore = useUserStore();
 
 let firstName = ref ("")
 let lastName = ref("")
 let email = ref("")
 let userName = ref("")
 
+const token = userStore.token;
+const user = userStore.userName;
 
-let user = localStorage.getItem("user");
-let token = localStorage.getItem("token");
 
 async function profile(e) {
 	e.preventDefault()
 
-	const token = localStorage.getItem("token")
+	const token = userStore.token;
 
 	const url = 'https://hap-app-api.azurewebsites.net/user'
 
@@ -35,11 +37,15 @@ async function profile(e) {
 	if (response.status === 200) {
 		//store username and token in local response
 		const data = await response.json()
+
+		userStore.setUser(
+				data.firstName,
+				data.lastName,
+				data.userName,
+				data.email,
+				data.token ?? userStore.token
+		)
 			
-		localStorage.setItem("user", data.userName)
-		localStorage.setItem("email", data.email)
-		localStorage.setItem("firstName", data.firstName)
-		localStorage.setItem("lastName", data.lastName)
 		
 		userName.value = data.userName;
 		email.value = data.email;
@@ -60,8 +66,8 @@ async function profile(e) {
 
 function signOut(event) {
 	// maybe remove something from localStorage?
-	localStorage.removeItem("user");
-	localStorage.removeItem("token");
+	userStore.$reset();
+	
 	
 	console.log("clicked")
 
@@ -73,7 +79,7 @@ function signOut(event) {
 async function deleteUser (event) {
 	event.preventDefault()
 
-	const token = localStorage.getItem("token")
+	const token = userStore.token;
 	const url = 'https://hap-app-api.azurewebsites.net/user'
 
 	let result = confirm("Please confirm you want to delete your account?")
@@ -91,9 +97,8 @@ async function deleteUser (event) {
 		if (response.status === 200) {
 			//const data = await response.json()
 			
-			localStorage.removeItem("token")
-			localStorage.removeItem("user")
-			
+			userStore.$reset();
+						
 			//TODO: Store username in localStorage as well
 
 			router.push({
