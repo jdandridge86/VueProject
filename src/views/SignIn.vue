@@ -3,11 +3,9 @@
 import Header from '../components/Header.vue'
 import { useRouter } from 'vue-router'
 import { ref , reactive } from 'vue'
-//import { storeToRefs } from 'pinia';
-//import { useUserStore } from '@/stores/user';
+import { useUserStore } from '@/stores/user'
 
-//const userStore = useUserStore()
-//const { email, password } = storeToRefs(userStore)
+const userStore = useUserStore();
 
 const router = useRouter()
 
@@ -45,8 +43,13 @@ async function signIn (event) {
 		if (response.status === 200) {
 			const data = await response.json()
 
-			localStorage.setItem("token", data.token)
-			localStorage.setItem("user", data.user.userName)
+			userStore.setUser(
+				data.user.firstName,
+				data.user.lastName,
+				data.user.userName,
+				data.user.email,
+				data.token
+			)
 			console.log(data.user.userName)
 			//TODO: Store username in localStorage as well
 

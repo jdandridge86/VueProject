@@ -1,14 +1,17 @@
 <script setup>
+import { useUserStore } from '@/stores/user';
 import { onMounted, ref , reactive } from 'vue'
 
 let query = ref ("");
 const users = ref([])
 let message = ref("")
 
+const userStore = useUserStore();
+
 async function sendMessage(e) {
 	e.preventDefault();
 
-	const token = localStorage.getItem("token")
+	const token = userStore.token;
 
 	const data = {
 		text: message.value
@@ -36,7 +39,7 @@ async function sendMessage(e) {
 
 async function search () {
     
-    const token = localStorage.getItem("token")
+    const token = userStore.token;
     const url = `https://hap-app-api.azurewebsites.net/users?search=firstName|lastName|userName:${query.value}`
     console.log(url)
 
